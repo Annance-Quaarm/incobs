@@ -1,7 +1,16 @@
-import { ClusterProvider } from '@/components/cluster/cluster-data-access'
-import { SolanaProvider } from '@/components/solana/solana-provider'
-import { UiLayout } from '@/components/ui/ui-layout'
+// import { ClusterProvider } from '@/components/cluster/cluster-data-access'
+// import { SolanaProvider } from '@/components/solana/solana-provider'
+// import { UiLayout } from '@/components/ui/ui-layout'
 import { ReactQueryProvider } from '../react-query-provider'
+
+import {
+  ClerkProvider,
+  // SignInButton,
+  // SignUpButton,
+  // SignedIn,
+  // SignedOut,
+  // UserButton,
+} from '@clerk/nextjs'
 
 export const metadata = {
   title: 'Incobs',
@@ -16,16 +25,26 @@ const links: { label: string; path: string }[] = [
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body>
-        <ReactQueryProvider>
-          <ClusterProvider>
-            <SolanaProvider>
-              <UiLayout links={links}>{children}</UiLayout>
-            </SolanaProvider>
-          </ClusterProvider>
-        </ReactQueryProvider>
-      </body>
-    </html>
+
+    <ClerkProvider>
+      <ReactQueryProvider>
+        {/* <ClusterProvider>
+              <SolanaProvider> */}
+        {/* <header className="flex justify-end items-center p-4 gap-4 h-16">
+          <SignedOut>
+            <SignInButton />
+            <SignUpButton />
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
+        </header> */}
+        {children}
+        {/* <UiLayout links={links}>{children}</UiLayout> */}
+        {/* </SolanaProvider>
+            </ClusterProvider> */}
+      </ReactQueryProvider>
+    </ClerkProvider>
+
   )
 }
