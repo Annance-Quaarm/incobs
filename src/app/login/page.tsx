@@ -1,12 +1,23 @@
 "use client";
-import { DynamicWidget } from "@/lib/dynamic";
+import { DynamicWidget, useIsLoggedIn } from "@/lib/dynamic";
 import DynamicMethods from "@/components/Methods";
 import { useDarkMode } from "@/lib/useDarkMode";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Main() {
   const { isDarkMode } = useDarkMode();
+  const isLoggedIn = useIsLoggedIn();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      router.push("/dashboard");
+    }
+  }, [isLoggedIn, router]);
+
 
   return (
     <div className={`min-h-screen bg-gradient-to-b from-background to-background/80 ${isDarkMode ? 'dark' : 'light'}`}>
