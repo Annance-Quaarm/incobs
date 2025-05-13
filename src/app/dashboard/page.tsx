@@ -1,7 +1,8 @@
+import DynamicMethods from "@/components/Methods";
 import { Button } from "@/components/ui/button";
 
 export default function DashboardPage() {
     return (
-        <Button>Hello</Button>
+        <DynamicMethods isDarkMode={true} />
     );
 }

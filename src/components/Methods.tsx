@@ -4,6 +4,7 @@ import { useDynamicContext, useIsLoggedIn, useUserWallets } from "@dynamic-labs/
 import { isSolanaWallet } from '@dynamic-labs/solana'
 
 import UserTransactions from './UserTransactions';
+import { Button } from './ui/button';
 
 interface DynamicMethodsProps {
   isDarkMode: boolean;
@@ -91,22 +92,15 @@ export default function DynamicMethods({ isDarkMode }: DynamicMethodsProps) {
     <>
       {!isLoading && (
         <div className="dynamic-methods" data-theme={isDarkMode ? 'dark' : 'light'}>
-          <div className="methods-container">
-            <button className="btn btn-primary" onClick={showUser}>Fetch User</button>
-            <button className="btn btn-primary" onClick={showUserWallets}>Fetch User Wallets</button>
-
+          <div className="methods-container flex gap-5">
+            <Button onClick={showUser}>User Details</Button>
+            <Button onClick={showUserWallets}>User Wallets</Button>
 
             {primaryWallet && isSolanaWallet(primaryWallet) && (
               <>
-                <button className="btn btn-primary" onClick={fetchConnection}>
-                  Fetch Connection
-                </button>
-                <button className="btn btn-primary" onClick={fetchSigner}>
-                  Fetch Signer
-                </button>
-                <button className="btn btn-primary" onClick={showUserTransactions}>
-                  Recent Transactions
-                </button>
+                <Button onClick={fetchConnection}>Fetch Connection</Button>
+                <Button onClick={fetchSigner}>Fetch Signer</Button>
+                <Button onClick={showUserTransactions}>Recent Transactions</Button>
                 {/* <button className="btn btn-primary" onClick={signSolanaMessage}>
         Sign &quot;Hello World&quot; on Solana
       </button> */}
