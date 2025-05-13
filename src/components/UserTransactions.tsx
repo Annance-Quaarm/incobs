@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
-import { Connection, PublicKey } from '@solana/web3.js';
+import { Connection, PublicKey, ParsedInstruction } from '@solana/web3.js';
 
 function UserDashboard() {
   const { user, primaryWallet } = useDynamicContext();
@@ -25,11 +25,12 @@ function UserDashboard() {
             let recipient = null;
 
             tx?.transaction.message.instructions.forEach((ix) => {
+              const parsedInstruction = ix as ParsedInstruction;
               if (
-                ix.program === 'system' &&
-                ix.parsed?.type === 'transfer'
+                parsedInstruction.program === 'system' &&
+                parsedInstruction.parsed?.type === 'transfer'
               ) {
-                recipient = ix.parsed.info.destination;
+                recipient = parsedInstruction.parsed.info.destination;
               }
             });
 
@@ -42,7 +43,7 @@ function UserDashboard() {
           })
         );
 
-        setTransactions(txDetails);
+        setTransactions(txDetails as any);
       } catch (_) {
         setTransactions([]);
       } finally {

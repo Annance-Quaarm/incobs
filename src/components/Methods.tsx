@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { useDynamicContext, useIsLoggedIn, useUserWallets } from "@dynamic-labs/sdk-react-core";
 import { isSolanaWallet } from '@dynamic-labs/solana'
 
-import './Methods.css';
 import UserTransactions from './UserTransactions';
 
 interface DynamicMethodsProps {
@@ -17,23 +16,23 @@ export default function DynamicMethods({ isDarkMode }: DynamicMethodsProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [result, setResult] = useState<string | JSX.Element>('');
 
-  
+
   const safeStringify = (obj: unknown): string => {
-  const seen = new WeakSet();
-  return JSON.stringify(
-    obj,
-    (key, value) => {
-      if (typeof value === "object" && value !== null) {
-        if (seen.has(value)) {
-          return "[Circular]";
+    const seen = new WeakSet();
+    return JSON.stringify(
+      obj,
+      (key, value) => {
+        if (typeof value === "object" && value !== null) {
+          if (seen.has(value)) {
+            return "[Circular]";
+          }
+          seen.add(value);
         }
-        seen.add(value);
-      }
-      return value;
-    },
-    2
-  );
-};
+        return value;
+      },
+      2
+    );
+  };
 
 
   useEffect(() => {
@@ -60,35 +59,35 @@ export default function DynamicMethods({ isDarkMode }: DynamicMethodsProps) {
     setResult(<UserTransactions />);
   }
 
-async function fetchConnection() {
-  if (!primaryWallet || !isSolanaWallet(primaryWallet)) return;
+  async function fetchConnection() {
+    if (!primaryWallet || !isSolanaWallet(primaryWallet)) return;
 
-  const connection = await primaryWallet.getConnection();
-  setResult(safeStringify(connection));
-}
-
-async function fetchSigner() {
-  if (!primaryWallet || !isSolanaWallet(primaryWallet)) return;
-
-  const signer = await primaryWallet.getSigner();
-  setResult(safeStringify(signer));
-}
-
-async function signSolanaMessage() {
-  if (!primaryWallet || !isSolanaWallet(primaryWallet)) return;
-
-  const signature = await primaryWallet.signMessage("Hello World");
-
-  if (typeof signature !== "string") {
-    setResult("No signature returned");
-    return;
+    const connection = await primaryWallet.getConnection();
+    setResult(safeStringify(connection));
   }
-  setResult(signature);
-}
+
+  async function fetchSigner() {
+    if (!primaryWallet || !isSolanaWallet(primaryWallet)) return;
+
+    const signer = await primaryWallet.getSigner();
+    setResult(safeStringify(signer));
+  }
+
+  async function signSolanaMessage() {
+    if (!primaryWallet || !isSolanaWallet(primaryWallet)) return;
+
+    const signature = await primaryWallet.signMessage("Hello World");
+
+    if (typeof signature !== "string") {
+      setResult("No signature returned");
+      return;
+    }
+    setResult(signature);
+  }
 
 
 
-   return (
+  return (
     <>
       {!isLoading && (
         <div className="dynamic-methods" data-theme={isDarkMode ? 'dark' : 'light'}>
@@ -96,25 +95,25 @@ async function signSolanaMessage() {
             <button className="btn btn-primary" onClick={showUser}>Fetch User</button>
             <button className="btn btn-primary" onClick={showUserWallets}>Fetch User Wallets</button>
 
-            
-    {primaryWallet && isSolanaWallet(primaryWallet) && (
-    <>
-      <button className="btn btn-primary" onClick={fetchConnection}>
-        Fetch Connection
-      </button>
-      <button className="btn btn-primary" onClick={fetchSigner}>
-        Fetch Signer
-      </button>
-      <button className="btn btn-primary" onClick={showUserTransactions}>
-        Recent Transactions
-      </button>
-      {/* <button className="btn btn-primary" onClick={signSolanaMessage}>
+
+            {primaryWallet && isSolanaWallet(primaryWallet) && (
+              <>
+                <button className="btn btn-primary" onClick={fetchConnection}>
+                  Fetch Connection
+                </button>
+                <button className="btn btn-primary" onClick={fetchSigner}>
+                  Fetch Signer
+                </button>
+                <button className="btn btn-primary" onClick={showUserTransactions}>
+                  Recent Transactions
+                </button>
+                {/* <button className="btn btn-primary" onClick={signSolanaMessage}>
         Sign &quot;Hello World&quot; on Solana
       </button> */}
-    </>
-  )}
+              </>
+            )}
 
-        </div>
+          </div>
           {result && (
             <div className="results-container">
               {typeof result === 'string' ? (
