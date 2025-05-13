@@ -13,6 +13,7 @@
     "@dynamic-labs/solana": "*",
     "@radix-ui/react-slot": "^1.2.2",
     "@tailwindcss/postcss": "^4.1.6",
+    "bigint-buffer": "^1.1.5",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "crypto-browserify": "^3.12.0",

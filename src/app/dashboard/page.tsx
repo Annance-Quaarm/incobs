@@ -1,16 +1,17 @@
 'use client';
 import { useState } from 'react';
-import { Header } from "../(landing)/_components/header";
 import { Footer } from "../(landing)/_components/footer";
 import DynamicMethods from "@/components/Methods";
-import { useDynamicContext, useIsLoggedIn, useUserWallets } from "@dynamic-labs/sdk-react-core";
+import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { isSolanaWallet } from '@dynamic-labs/solana';
 import { Button } from "@/components/ui/button";
+import { useRouter } from 'next/navigation';
 
 export default function DashboardPage() {
   const [activeMethod, setActiveMethod] = useState<string | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(true);
   const { primaryWallet } = useDynamicContext();
+  const router = useRouter();
   
   const methods = [
     { id: 'user', label: 'User Details' },
@@ -28,7 +29,7 @@ export default function DashboardPage() {
       <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-background/80 border-b border-border/40">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <h1 className="text-xl font-bold">Dashboard</h1>
+            <h1 className="text-xl font-bold cursor-pointer" onClick={() => router.push("/")}>MCBuse</h1>
           </div>
           
           {/* Method buttons in header */}

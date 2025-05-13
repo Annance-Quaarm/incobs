@@ -17,12 +17,12 @@ importers:
       '@radix-ui/react-slot':
         specifier: ^1.2.2
         version: 1.2.2(@types/react@18.3.21)(react@18.3.1)
-      '@solana/web3.js':
-        specifier: ^1.98.2
-        version: 1.98.2(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)
       '@tailwindcss/postcss':
         specifier: ^4.1.6
         version: 4.1.6
+      bigint-buffer:
+        specifier: ^1.1.5
+        version: 1.1.5
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1

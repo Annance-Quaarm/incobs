@@ -29,7 +29,7 @@ const milestones = [
 
 export function VisionSection() {
     return (
-        <section className="py-24 bg-gray-50 dark:bg-gray-800">
+        <section className="py-24 bg-gray-50 dark:bg-gray-800 flex items-center justify-center">
             <div className="container px-4 md:px-6">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}

@@ -7,7 +7,7 @@ import { Mail, ArrowRight } from 'lucide-react'
 
 export function CTASection() {
     return (
-        <section className="py-24 bg-blue-600 dark:bg-blue-900">
+        <section className="py-24 bg-blue-600 dark:bg-blue-900 flex items-center justify-center">   
             <div className="container px-4 md:px-6">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
