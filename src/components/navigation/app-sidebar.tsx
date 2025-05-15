@@ -18,26 +18,11 @@ import { cn } from '@/lib/utils';
 import {
   BarChart3,
   ChevronDown,
-  FileText,
-  Film,
-  Folder,
-  FolderIcon,
   Home,
-  Image,
-  Layers,
-  LayoutGrid,
-  LayoutList,
-  ListVideo,
   LucideIcon,
-  Mail,
-  PlayCircle,
-  Puzzle,
   Settings,
-  Sparkles,
-  Tv,
   UserIcon,
   Users,
-  VideoIcon,
 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import React, { JSX, useState } from 'react';
@@ -66,35 +51,24 @@ interface NavigationItemProps extends NavigationItem {
   isActive?: boolean;
 }
 
-export const researcherNavigationSections: NavigationSection[] = [
+
+export const navSections: NavigationSection[] = [
   {
-    title: 'Research Workspace',
+    title: 'Dashboard',
     items: [
-      { title: 'Dashboard', url: '/dashboard', icon: Home },
-      { title: 'My Projects', url: '/projects', icon: Folder },
-      { title: 'My Artifacts', url: '/artifacts', icon: Layers },
-      {
-        title: 'FAIRification',
-        url: '',
-        icon: Sparkles,
-        children: [
-          { title: 'FAIR Assistant', url: '/fairify', icon: Sparkles },
-          { title: 'Metadata Editor', url: '/metadata', icon: FileText },
-        ],
-      },
-      { title: 'Integrations', url: '/integrations', icon: Puzzle },
-      { title: 'Invitations', url: '/invitations', icon: Mail },
+      { title: 'Overview', url: '/dashboard', icon: Home },
+      { title: 'Group Wallets', url: '/dashboard/group-wallet', icon: Users },
+      { title: 'Transactions', url: '/dashboard/transactions', icon: BarChart3 },
     ],
   },
   {
-    title: 'Profile & Collaboration',
+    title: 'Account',
     items: [
-      { title: 'Profile', url: '/profile', icon: UserIcon },
-      { title: 'Team', url: '/team', icon: Users },
+      { title: 'Profile', url: '/dashboard/profile', icon: UserIcon },
+      { title: 'Settings', url: '/dashboard/settings', icon: Settings },
     ],
   },
 ];
-
 
 const NavigationItem: React.FC<NavigationItemProps> = ({
   title,
@@ -108,7 +82,7 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
 
   if (children) {
     const isChildActive = children.some(
-      (child) => child.url && pathname.startsWith(child.url),
+      (child) => child.url && pathname === child.url,
     );
 
     return (
@@ -155,7 +129,7 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
                 <NavigationItem
                   key={child.title}
                   {...child}
-                  isActive={pathname.startsWith(child.url)}
+                  isActive={pathname === child.url}
                 />
               ))}
             </div>
@@ -172,7 +146,7 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
           href={url}
           className={cn(
             'flex items-center gap-3 px-3 py-2 rounded-md transition-colors',
-            isActive
+            pathname === url
               ? 'bg-primary/10 text-primary'
               : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400',
           )}
@@ -180,13 +154,13 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
           <Icon
             className={cn(
               'w-4 h-4',
-              isActive ? 'text-primary' : 'text-gray-500 dark:text-gray-400',
+              pathname === url ? 'text-primary' : 'text-gray-500 dark:text-gray-400',
             )}
           />
           <span
             className={cn(
               'text-sm font-medium',
-              isActive && 'font-semibold text-primary',
+              pathname === url && 'font-semibold text-primary',
             )}
           >
             {title}
@@ -256,7 +230,7 @@ export function AppSidebar({
     <Sidebar variant="inset">
       <NavHeader />
       <SidebarContent className="space-y-2">
-        {researcherNavigationSections.map((section) => (
+        {navSections.map((section) => (
           <NavigationSection key={section.title} section={section} />
         ))}
       </SidebarContent>

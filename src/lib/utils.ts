@@ -23,6 +23,8 @@ export function getAvatarInitials(fullName: string): string {
 }
 
 export function getBestFullName(user: UserProfile['verifiedCredentials'][0]): string {
+  if (!user) return 'Unknown';
+
   if (user.oauthDisplayName) return user.oauthDisplayName;
   if (user.email) return user.email;
   if (user.walletName) return user.walletName;

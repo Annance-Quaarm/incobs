@@ -45,14 +45,14 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                                 <DynamicBreadcrumbs />
                             </div>
 
-                            <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-background/80 border-b border-border/40">
+                            {/* <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-background/80 border-b border-border/40">
                                 <div className="container mx-auto px-4 h-16 flex items-center justify-between">
                                     <div className="flex items-center space-x-2">
                                         <h1 className="text-xl font-bold cursor-pointer" onClick={() => router.push("/")}>MCBuse</h1>
-                                    </div>
+                                    </div> */}
 
-                                    {/* Method buttons in header */}
-                                    <div className="flex items-center space-x-2 overflow-x-auto">
+                            {/* Method buttons in header */}
+                            {/* <div className="flex items-center space-x-2 overflow-x-auto">
                                         {methods.map(method => (
                                             ((method.requiresSolana && primaryWallet && isSolanaWallet(primaryWallet)) || !method.requiresSolana) && (
                                                 <Button
@@ -68,14 +68,16 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                                         <Button onClick={toggleDarkMode} variant="ghost" size="sm">
                                             {isDarkMode ? '☀️' : '🌙'}
                                         </Button>
-                                    </div>
-                                </div>
-                            </header>
+                                    </div> */}
+                            {/* </div>
+                            </header> */}
                         </div>
 
 
                     </header>
-                    {children}
+                    <div className="container mx-auto px-4">
+                        {children}
+                    </div>
                 </SidebarInset>
             </SidebarProvider>
         </ProgressBar>
