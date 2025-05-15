@@ -1,4 +1,3 @@
-import { AuroraBackground } from '@/components/ui/aurora-background'
 import { GalleryVerticalEnd } from 'lucide-react'
 import React from 'react'
 

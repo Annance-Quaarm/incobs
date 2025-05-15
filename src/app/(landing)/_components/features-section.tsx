@@ -60,7 +60,7 @@ export function FeaturesSection() {
                             <Card className="h-full">
                                 <CardHeader>
                                     <CardTitle className="flex items-center gap-2">
-                                        <feature.icon className="h-6 w-6 text-blue-500" />
+                                        <feature.icon className="h-6 w-6 text-gray-200" />
                                         {feature.title}
                                     </CardTitle>
                                 </CardHeader>
