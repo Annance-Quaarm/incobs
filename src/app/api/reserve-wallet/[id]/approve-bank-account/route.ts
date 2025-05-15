@@ -50,6 +50,15 @@ export async function POST(
             )
         }
 
+        await db.reserveWalletMember.update({
+            where: {
+                id: member.id
+            },
+            data: {
+                hasApproved: true
+            }
+        })
+
         const totalMembers = await db.reserveWalletMember.count({
             where: { reserveWalletId }
         });
@@ -57,6 +66,7 @@ export async function POST(
 
         const approvedMembers = await db.reserveWalletMember.count({
             where: {
+                reserveWalletId,
                 hasApproved: true
             }
         });
