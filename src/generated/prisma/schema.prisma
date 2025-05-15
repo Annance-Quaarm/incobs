@@ -1,0 +1,175 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// =========================================================
+// Bank Model
+// =========================================================
+// Represents a simulated financial institution in our system.
+// Each bank has a unique code and can have multiple accounts.
+// In our prototype, these are virtual banks handling SOL cryptocurrency,
+// NOT traditional fiat currency banks.
+model Bank {
+  id        String        @id @default(cuid())
+  name      String
+  code      String        @unique // Bank identification code
+  accounts  BankAccount[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+// =========================================================
+// BankAccount Model
+// =========================================================
+// A bank account that handles SOL cryptocurrency.
+// Each reserve wallet can have exactly ONE bank account (1:1 relationship).
+// The bank account holds the collective SOL funds and serves as the parent for virtual IBANs.
+// When the reserve wallet reaches its threshold, a bank account is created.
+// Balance stored in lamports (smallest unit of SOL, 1 SOL = 1,000,000,000 lamports).
+model BankAccount {
+  id              String            @id // Should store Solana address for the bank account
+  accountNumber   String            @unique
+  balance         BigInt            @default(0) // Stored in lamports
+  status          AccountStatus     @default(ACTIVE)
+  bank            Bank              @relation(fields: [bankId], references: [id])
+  bankId          String
+  reserveWallet   ReserveWallet?    @relation(fields: [reserveWalletId], references: [id])
+  reserveWalletId String?           @unique // Ensures one bank account per reserve wallet
+  virtualIbans    VirtualIban[]
+  transactions    BankTransaction[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+}
+
+// =========================================================
+// VirtualIban Model
+// =========================================================
+// Virtual IBANs are individual routing identifiers assigned to each user in a reserve wallet.
+// Although called "IBANs" for conceptual familiarity, these are not traditional bank IBANs
+// but rather routing mechanisms for SOL cryptocurrency.
+// They enable users to receive SOL directly to the shared bank account with proper attribution.
+// Each virtual IBAN is linked to a specific user's Solana wallet address and the parent bank account.
+// When SOL is sent to a virtual IBAN, it's credited to the parent bank account 
+// but tracked for the specific user.
+model VirtualIban {
+  id            String            @id @default(cuid())
+  iban          String            @unique
+  bankAccount   BankAccount       @relation(fields: [bankAccountId], references: [id])
+  bankAccountId String
+  walletAddress String // Solana wallet address of the user
+  transactions  BankTransaction[]
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+}
+
+// =========================================================
+// BankTransaction Model
+// =========================================================
+// Records all SOL transactions involving the banking layer, both incoming and outgoing.
+// Each transaction is associated with a bank account and optionally with a virtual IBAN.
+// For incoming transactions, virtualIban identifies which user received the SOL funds.
+// For outgoing transactions (to a wallet), there's an optional connection to a 
+// WalletTransaction for tracking the SOL transfer across layers.
+model BankTransaction {
+  id                String               @id @default(cuid())
+  amount            BigInt // Amount in lamports (smallest unit of SOL)
+  direction         TransactionDirection
+  description       String?
+  status            TransactionStatus    @default(COMPLETED)
+  senderName        String? // Name of the party sending SOL (for incoming transactions)
+  senderReference   String? // Reference provided by the sender
+  bankAccount       BankAccount          @relation(fields: [bankAccountId], references: [id])
+  bankAccountId     String
+  virtualIban       VirtualIban?         @relation(fields: [virtualIbanId], references: [id])
+  virtualIbanId     String? // Which user's IBAN received the SOL funds
+  walletTransaction WalletTransaction? // Link to wallet layer transaction if SOL was moved up
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+}
+
+// =========================================================
+// WalletTransaction Model
+// =========================================================
+// Represents a SOL transaction on the wallet layer.
+// Used primarily to track SOL transfers from the banking layer to the wallet layer.
+// When a user withdraws SOL from their virtual IBAN to their personal Solana wallet,
+// a WalletTransaction is created and linked to the corresponding BankTransaction.
+model WalletTransaction {
+  id                String           @id @default(cuid())
+  amount            BigInt // Amount in lamports
+  description       String?
+  walletAddress     String // Destination Solana wallet address
+  bankTransaction   BankTransaction? @relation(fields: [bankTransactionId], references: [id])
+  bankTransactionId String?          @unique // Links to the bank transaction (1:1)
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+}
+
+// =========================================================
+// ReserveWallet Model
+// =========================================================
+// Represents a collective SOL wallet shared by multiple users.
+// When the SOL balance reaches the threshold, a bank account can be created.
+// The reserve wallet has a 1:1 relationship with a bank account.
+// This model directly mirrors the on-chain ReserveWallet contract.
+model ReserveWallet {
+  id                 String                @id // Solana address/public key
+  name               String
+  balance            BigInt                @default(0) // Balance in lamports
+  threshold          BigInt // Amount in lamports that triggers bank account creation
+  bankAccountCreated Boolean               @default(false) // Flag matching on-chain state
+  bankAccount        BankAccount? // Optional relation to bank account
+  members            ReserveWalletMember[] // Users who are part of this reserve wallet
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
+}
+
+// =========================================================
+// ReserveWalletMember Model
+// =========================================================
+// Represents users participating in a reserve wallet.
+// Tracks individual contributions, approvals, and administrative privileges.
+// Maps to user_contributions and user_approvals in the smart contract.
+model ReserveWalletMember {
+  id              String        @id @default(cuid())
+  walletAddress   String // User's Solana wallet address
+  name            String? // Optional display name
+  reserveWallet   ReserveWallet @relation(fields: [reserveWalletId], references: [id])
+  reserveWalletId String
+  contribution    BigInt        @default(0) // How much SOL this user has contributed (in lamports)
+  hasApproved     Boolean       @default(false) // Whether user has approved bank account creation
+  isAdmin         Boolean       @default(false) // Whether user has admin privileges
+  joinedAt        DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@unique([walletAddress, reserveWalletId]) // Each wallet can only be a member once
+}
+
+enum AccountStatus {
+  ACTIVE
+  SUSPENDED
+  CLOSED
+}
+
+enum TransactionDirection {
+  INCOMING
+  OUTGOING
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}

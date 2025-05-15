@@ -33,9 +33,12 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     return (
         <ProgressBar className="fixed top-0 h-1 bg-primary">
             <SidebarProvider>
-                <AppSidebar
-                    user={user}
-                />
+                {user && (
+                    <AppSidebar
+                        user={user}
+                        handleLogOut={handleLogOut}
+                    />
+                )}
                 <SidebarInset>
                     <header className="flex h-16 shrink-0 items-center gap-2">
                         <div className="flex w-full justify-between">

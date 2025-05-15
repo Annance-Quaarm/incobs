@@ -154,8 +154,8 @@ export default function GroupList({ groups, onJoinGroup, onDepositClick }: Group
                                 <ul className="list-disc pl-4 space-y-2">
                                     <li>You can only join one group at a time</li>
                                     <li>Groups have a maximum of 5 members</li>
-                                    <li>You'll need to contribute to the group wallet</li>
-                                    <li>You'll be able to approve bank account creation</li>
+                                    <li>You&pos;ll need to contribute to the group wallet</li>
+                                    <li>You&apos;ll be able to approve bank account creation</li>
                                 </ul>
                             </div>
                         </AlertDialogDescription>
