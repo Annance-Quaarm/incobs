@@ -1,3 +1,4 @@
+import { BankAccount } from './../generated/prisma/index.d';
 import { db } from "@/lib/prisma";
 
 const mockBanks = [
@@ -19,6 +20,26 @@ const mockBanks = [
     },
 ];
 
+
+// generate account number
+export async function generateAccountNumber() {
+    let accountNumber: string;
+    let exists = true;
+
+    while(exists) {
+        accountNumber = Math.floor(10000000 + Math.random() * 90000000).toString();
+
+        const existingAccount = await db.bankAccount.findUnique({
+            where: { accountNumber }
+        });
+
+        if(!existingAccount) {
+            exists = false;
+        }
+    }
+
+    return accountNumber!;
+}
 
 
 // Initialize the mock banks in the db
