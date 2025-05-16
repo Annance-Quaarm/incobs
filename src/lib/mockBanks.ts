@@ -1,4 +1,3 @@
-import { BankAccount } from './../generated/prisma/index.d';
 import { db } from "@/lib/prisma";
 
 const mockBanks = [
