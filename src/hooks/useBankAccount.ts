@@ -202,6 +202,58 @@ export function useBankAccount() {
     }, []);
 
 
+    // get user's reserve wallets
+    const getUserReserveWallets = useCallback(async () => {
+        if(!userPublicKey) {
+            setError("Wallet not connected");
+            return null;
+        }
+
+        setLoading(true);
+        setError(null);
+
+        try {
+            const response = await axios.get(`/api/user/${userPublicKey.toString()}/reserve-wallets`);
+            return response.data;
+        } catch (error: any) {
+            console.error("Error fetching user reserve wallets:", error);
+            setError(error.response?.data?.error || "Failed to fetch user reserve wallets");
+            return null;
+        } finally {
+            setLoading(false);
+        }
+    }, [userPublicKey]);
+
+
+    // get reserve wallet details
+    const getReserveWalletDetails = useCallback(async (
+        reserveWalletId: string
+    ) => {
+        if(!userPublicKey) {
+            setError("Wallet not connected");
+            return null;
+        }
+
+        setLoading(true);
+        setError(null);
+
+        try {
+            const response = await axios.get(`/api/reserve-wallet/${reserveWalletId}`, {
+                params: {
+                    walletAddress: userPublicKey.toString()
+                }
+            });
+
+            return response.data;
+        } catch (error: any) {
+            console.error("Error fetching reserve wallet details:", error);
+            setError(error.response?.data?.error || "Failed to fetch reserve wallet details");
+            return null;
+        } finally {
+            setLoading(false);
+        }
+    }, [userPublicKey]);
+
     return {
         loading,
         error,
@@ -211,6 +263,8 @@ export function useBankAccount() {
         getUserIbans,
         getIbanTransactions,
         withdrawToWallet,
-        simulateDeposit
+        simulateDeposit,
+        getUserReserveWallets,
+        getReserveWalletDetails
     }
 }
