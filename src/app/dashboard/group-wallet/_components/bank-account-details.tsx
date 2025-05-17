@@ -34,49 +34,39 @@ export function BankAccountDetails({ bankAccount, onDistributeFunds, isAdmin }: 
     };
 
     return (
-        <Card className="w-full max-w-2xl mx-auto">
-            <CardHeader>
-                <CardTitle>Bank Account Details</CardTitle>
-                <CardDescription>
-                    Information about the bank account associated with this group wallet.
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                <div className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <p className="text-sm font-medium text-gray-500">Account Name</p>
-                            <p className="text-lg font-semibold">{bankAccount.accountName}</p>
-                        </div>
-                        <div>
-                            <p className="text-sm font-medium text-gray-500">Bank Name</p>
-                            <p className="text-lg font-semibold">{bankAccount.bankName}</p>
-                        </div>
-                        <div>
-                            <p className="text-sm font-medium text-gray-500">Account Number</p>
-                            <p className="text-lg font-semibold">{bankAccount.accountNumber}</p>
-                        </div>
-                        <div>
-                            <p className="text-sm font-medium text-gray-500">Creation Date</p>
-                            <p className="text-lg font-semibold">{bankAccount?.creationDate || 'N/A'}</p>
-                        </div>
-                        <div className="col-span-2">
-                            <p className="text-sm font-medium text-gray-500">Current Balance</p>
-                            <p className="text-lg font-semibold">{bankAccount.balance} SOL</p>
-                        </div>
-                    </div>
-
-                    {isAdmin && (
-                        <Button
-                            onClick={handleDistributeFunds}
-                            disabled={isLoading}
-                            className="w-full"
-                        >
-                            {isLoading ? 'Distributing...' : 'Distribute Funds'}
-                        </Button>
-                    )}
+        <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+                <div>
+                    <p className="text-sm font-medium text-gray-500">Account Name</p>
+                    <p className="text-lg font-semibold">{bankAccount.accountName}</p>
                 </div>
-            </CardContent>
-        </Card>
+                <div>
+                    <p className="text-sm font-medium text-gray-500">Bank Name</p>
+                    <p className="text-lg font-semibold">{bankAccount.bankName}</p>
+                </div>
+                <div>
+                    <p className="text-sm font-medium text-gray-500">Account Number</p>
+                    <p className="text-lg font-semibold">{bankAccount.accountNumber}</p>
+                </div>
+                <div>
+                    <p className="text-sm font-medium text-gray-500">Creation Date</p>
+                    <p className="text-lg font-semibold">{bankAccount?.creationDate || 'N/A'}</p>
+                </div>
+                <div className="col-span-2">
+                    <p className="text-sm font-medium text-gray-500">Current Balance</p>
+                    <p className="text-lg font-semibold">{bankAccount.balance} SOL</p>
+                </div>
+            </div>
+
+            {isAdmin && (
+                <Button
+                    onClick={handleDistributeFunds}
+                    disabled={isLoading}
+                    className="w-full"
+                >
+                    {isLoading ? 'Distributing...' : 'Distribute Funds'}
+                </Button>
+            )}
+        </div>
     );
 } 

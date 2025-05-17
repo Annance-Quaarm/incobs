@@ -9,7 +9,7 @@ export async function POST(
     try {
 
 
-        const { amount } = await req.json();
+        const { amount, walletAddress } = await req.json();
         if (!amount || isNaN(parseFloat(amount))) {
             return NextResponse.json(
                 { error: 'Invalid amount' },
@@ -53,8 +53,7 @@ export async function POST(
         });
 
         // Update the member's contribution
-        const userWalletAddress = session.user.walletAddress;
-        const member = updatedGroupWallet.members.find(m => m.walletAddress === userWalletAddress);
+        const member = updatedGroupWallet.members.find(m => m.walletAddress === walletAddress);
 
         if (member) {
             await db.reserveWalletMember.update({
@@ -72,7 +71,7 @@ export async function POST(
         return NextResponse.json({
             success: true,
             newBalance: (Number(updatedGroupWallet.balance) / LAMPORTS_PER_SOL).toFixed(1),
-            userWalletAddress,
+            walletAddress,
         });
     } catch (error) {
         console.error('Error processing deposit:', error);

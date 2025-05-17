@@ -95,14 +95,10 @@ export default function GroupDetailsPage() {
         if (!group) return;
 
         try {
-            const response = await axios.post(`/api/group-wallet/${group.id}/deposit`, {
+            await axios.post(`/api/group-wallet/${group.id}/deposit`, {
                 amount,
+                walletAddress: primaryWallet?.address
             });
-            const data = response.data;
-
-            if (data.error) {
-                throw new Error(data.error || 'Failed to deposit funds');
-            }
 
             // Refresh group data
             const groupResponse = await axios.get(`/api/group-wallet/${params.groupId}`);
@@ -164,6 +160,7 @@ export default function GroupDetailsPage() {
     }
     const balance = Number(parseFloat(group.balance.toString())) / LAMPORTS_PER_SOL;
     const threshold = Number(parseFloat(group.threshold.toString())) / LAMPORTS_PER_SOL;
+    const isThresholdReached = balance >= threshold;
 
     return (
         <div className="container mx-auto py-6 space-y-6">
@@ -218,6 +215,7 @@ export default function GroupDetailsPage() {
                         <Button
                             className="w-full"
                             onClick={() => setShowDepositModal(true)}
+                        // disabled={isThresholdReached}
                         >
                             Deposit
                         </Button>
@@ -339,6 +337,9 @@ export default function GroupDetailsPage() {
                 <Card>
                     <CardHeader>
                         <CardTitle>Bank Account Details</CardTitle>
+                        <CardDescription>
+                            Information about the bank account associated with this group wallet.
+                        </CardDescription>
                     </CardHeader>
                     <CardContent>
                         <BankAccountDetails
