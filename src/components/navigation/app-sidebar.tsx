@@ -57,7 +57,7 @@ export const navSections: NavigationSection[] = [
     title: 'Dashboard',
     items: [
       { title: 'Overview', url: '/dashboard', icon: Home },
-      { title: 'Group Wallets', url: '/dashboard/group-wallet', icon: Users },
+      { title: 'Groups', url: '/dashboard/groups', icon: Users },
       { title: 'Transactions', url: '/dashboard/transactions', icon: BarChart3 },
     ],
   },

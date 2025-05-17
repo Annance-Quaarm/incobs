@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Providers from "@/lib/providers";
 import { Toaster } from "sonner";
+import "@/lib/polyfills";
 
 
 const inter = Inter({ subsets: ["latin"] });

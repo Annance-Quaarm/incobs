@@ -14,7 +14,7 @@ export function useBankAccount() {
         setError(null);
 
         try {
-            const response = await axios.get("/api/bank");
+            const response = await axios.get("/api/bank/list-banks");
             return response.data.banks;
         } catch (error: any) {
             console.error("Error fetching banks:", error);
@@ -30,7 +30,7 @@ export function useBankAccount() {
     const approveAccountCreation = useCallback(async (
         reserveWalletId: string
     ) => {
-        if(!userPublicKey) {
+        if (!userPublicKey) {
             setError("Wallet not connected");
             return null;
         }
@@ -40,7 +40,7 @@ export function useBankAccount() {
 
         try {
             const response = await axios.post(`/api/reserve-wallet/${reserveWalletId}/approve-bank-account`, {
-                walletAddress: userPublicKey.toString() 
+                walletAddress: userPublicKey.toString()
             });
 
             return response.data;
@@ -59,7 +59,7 @@ export function useBankAccount() {
         reserveWalletId: string,
         bankCode: string
     ) => {
-        if(!userPublicKey) {
+        if (!userPublicKey) {
             setError("Wallet not connected");
             return null;
         }
@@ -85,7 +85,7 @@ export function useBankAccount() {
 
     // get user's virtual IBANs
     const getUserIbans = useCallback(async () => {
-        if(!userPublicKey) {
+        if (!userPublicKey) {
             setError("Wallet not connected");
             return null;
         }
@@ -112,7 +112,7 @@ export function useBankAccount() {
         page = 1,
         limit = 20
     ) => {
-        if(!userPublicKey) {
+        if (!userPublicKey) {
             setError("Wallet not connected");
             return null;
         }
@@ -146,7 +146,7 @@ export function useBankAccount() {
         amount: number,
         description?: string
     ) => {
-        if(!userPublicKey) {
+        if (!userPublicKey) {
             setError("Wallet not connected");
             return null;
         }
@@ -185,7 +185,7 @@ export function useBankAccount() {
 
         try {
             const response = await axios.post(`/api/iban/${iban}/deposit`, {
-                amount, 
+                amount,
                 senderName: senderName || "External Sender",
                 senderReference: senderReference || "No Reference Provided",
                 description: description || "External transaction"
@@ -204,7 +204,7 @@ export function useBankAccount() {
 
     // get user's reserve wallets
     const getUserReserveWallets = useCallback(async () => {
-        if(!userPublicKey) {
+        if (!userPublicKey) {
             setError("Wallet not connected");
             return null;
         }
@@ -229,7 +229,7 @@ export function useBankAccount() {
     const getReserveWalletDetails = useCallback(async (
         reserveWalletId: string
     ) => {
-        if(!userPublicKey) {
+        if (!userPublicKey) {
             setError("Wallet not connected");
             return null;
         }

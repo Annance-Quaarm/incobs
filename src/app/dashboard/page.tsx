@@ -1,20 +1,27 @@
 'use client';
-import { useState } from 'react';
-import { Footer } from "../(landing)/_components/footer";
-import DynamicMethods from "@/components/Methods";
+import { useEffect, useState } from 'react';
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
-import { isSolanaWallet } from '@dynamic-labs/solana';
 import { Button } from "@/components/ui/button";
-import { useRouter } from 'next/navigation';
-import { methods } from '@/constants/methods';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowUpRight, ArrowDownRight, Wallet, Activity, Coins, Shield } from "lucide-react";
+import { useBankAccount } from '@/hooks/useBankAccount';
+import { getProgramBalance } from '@/lib/solana';
 
 export default function DashboardPage() {
   const [activeMethod, setActiveMethod] = useState<string | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(true);
   const { primaryWallet } = useDynamicContext();
   const [isLoading, setIsLoading] = useState(false);
+
+  const { getBanks, loading: isBanksLoading, getReserveWalletDetails, loading: isReserveWalletsLoading, error: reserveWalletsError, getUserReserveWallets } = useBankAccount();
+
+  useEffect(() => {
+    // getBanks();
+
+    getProgramBalance(process.env.NEXT_PUBLIC_PROGRAM_ID || "");
+    // getUserReserveWallets();
+    // getReserveWalletDetails(primaryWallet?.address || "");
+  }, []);
 
   // Mock data - replace with real data from dynamic/backend
   const portfolioValue = "1,234.56";
@@ -165,11 +172,11 @@ export default function DashboardPage() {
                       <ArrowDownRight className="h-4 w-4" />
                       <span>Withdraw</span>
                     </Button>
-                    {/* <Button variant="outline" className="h-auto py-4 flex flex-col items-center gap-2">
-                      <Coins className="h-4 w-4" />
-                      <span>Swap</span>
-                    </Button>
                     <Button variant="outline" className="h-auto py-4 flex flex-col items-center gap-2">
+                      <Coins className="h-4 w-4" />
+                      <span>Send</span>
+                    </Button>
+                    {/* <Button variant="outline" className="h-auto py-4 flex flex-col items-center gap-2">
                       <Activity className="h-4 w-4" />
                       <span>Stake</span>
                     </Button> */}
