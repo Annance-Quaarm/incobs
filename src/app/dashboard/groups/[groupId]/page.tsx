@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Users, Wallet, Banknote, ArrowLeft, CheckCircle2, XCircle } from 'lucide-react';
 import { ReserveWallet, ReserveWalletMember, BankAccount } from '@prisma/client';
-import { DepositModal } from '@/app/dashboard/group-wallet/_components/deposit-modal';
-import { BankAccountDetails } from '@/app/dashboard/group-wallet/_components/bank-account-details';
+import { DepositModal } from '@/app/dashboard/groups/_components/deposit-modal';
+import { BankAccountDetails } from '@/app/dashboard/groups/_components/bank-account-details';
 import { toast } from 'sonner';
 import Link from 'next/link';
 import axios from 'axios';
@@ -151,7 +151,7 @@ export default function GroupDetailsPage() {
                 <div className="text-center">
                     <h2 className="text-xl font-semibold">Group not found</h2>
                     <p className="text-gray-500 mt-2">The group you're looking for doesn't exist or you don't have access to it.</p>
-                    <Link href="/dashboard/group-wallet">
+                    <Link href="/dashboard/groups">
                         <Button className="mt-4">Back to Groups</Button>
                     </Link>
                 </div>
@@ -165,7 +165,7 @@ export default function GroupDetailsPage() {
     return (
         <div className="container mx-auto py-6 space-y-6">
             <div className="flex items-center space-x-4 mb-6">
-                <Link href="/dashboard/group-wallet">
+                <Link href="/dashboard/groups">
                     <Button variant="ghost" size="icon">
                         <ArrowLeft className="h-4 w-4" />
                     </Button>

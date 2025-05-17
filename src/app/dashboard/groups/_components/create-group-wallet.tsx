@@ -151,7 +151,7 @@ export function CreateGroupWallet({ onSuccess }: CreateGroupWalletProps) {
 
             toast.success('Group wallet created successfully!');
             onSuccess?.();
-            router.push(`/dashboard/group-wallet/${data.groupWallet.id}`);
+            router.push(`/dashboard/groups/${data.groupWallet.id}`);
         } catch (error) {
             console.error('Error creating group wallet:', error);
             toast.error(error instanceof Error ? error.message : 'Failed to create group wallet');
@@ -166,7 +166,7 @@ export function CreateGroupWallet({ onSuccess }: CreateGroupWalletProps) {
     };
 
     return (
-        <Card className="w-full max-w-2xl mx-auto">
+        <Card className="w-full max-w-2xl mt-8">
             <CardHeader>
                 <CardTitle>Create Group Wallet</CardTitle>
                 <CardDescription>

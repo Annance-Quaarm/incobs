@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CreateGroupWallet } from '@/app/dashboard/group-wallet/_components/create-group-wallet';
-import { DepositModal } from '@/app/dashboard/group-wallet/_components/deposit-modal';
+import { CreateGroupWallet } from '@/app/dashboard/groups/_components/create-group-wallet';
+import { DepositModal } from '@/app/dashboard/groups/_components/deposit-modal';
 import { toast } from 'sonner';
 import { ReserveWallet, ReserveWalletMember, BankAccount } from '@prisma/client';
 import GroupList from './_components/group-list';
@@ -102,7 +102,7 @@ export default function GroupWalletPage() {
         thresholdAmount: (Number(group.threshold) / LAMPORTS_PER_SOL).toFixed(1),
         memberCount: group.members.length,
         maxMembers: 5,
-        isJoined: true,
+        isJoined: group.members.some(member => member.walletAddress === primaryWallet?.address),
         bankAccountCreated: group.bankAccountCreated,
         userContributions: group.members.reduce((acc, member) => ({
             ...acc,
@@ -121,26 +121,40 @@ export default function GroupWalletPage() {
         } : null
     });
 
-    const groupList = useMemo(() => groups.map(transformGroupForUI), [groups]);
+    const groupList = useMemo(() => groups.map(transformGroupForUI), [groups, primaryWallet?.address]);
+
+    // Filter groups based on membership
+    const myGroups = useMemo(() => groupList.filter(group => group.isJoined), [groupList]);
+    const otherGroups = useMemo(() => groupList.filter(group => !group.isJoined), [groupList]);
 
     return (
         <div className="container mx-auto py-6 space-y-6">
             <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList>
-                    <TabsTrigger value="groups">Group Wallets</TabsTrigger>
+                    <TabsTrigger value="groups">My Groups</TabsTrigger>
+                    <TabsTrigger value="other">Other Groups</TabsTrigger>
                     <TabsTrigger value="create">Create New</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="groups" className="space-y-6">
                     <GroupList
-                        groups={groupList}
+                        groups={myGroups}
                         onJoinGroup={handleJoinGroup}
                         onDepositClick={handleDepositClick}
                         isLoading={isLoading}
                     />
                 </TabsContent>
 
-                <TabsContent value="create">
+                <TabsContent value="other" className="space-y-6">
+                    <GroupList
+                        groups={otherGroups}
+                        onJoinGroup={handleJoinGroup}
+                        onDepositClick={handleDepositClick}
+                        isLoading={isLoading}
+                    />
+                </TabsContent>
+
+                <TabsContent value="create" className="space-y-6">
                     <CreateGroupWallet
                         onSuccess={handleCreateGroup}
                     />

@@ -61,7 +61,7 @@ export default function GroupList({ groups, onJoinGroup, onDepositClick, isLoadi
     };
 
     const handleCardClick = (groupId: string) => {
-        router.push(`/dashboard/group-wallet/${groupId}`);
+        router.push(`/dashboard/groups/${groupId}`);
     };
 
     if (isLoading) {
