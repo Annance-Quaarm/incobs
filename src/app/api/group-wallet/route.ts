@@ -35,15 +35,15 @@ export async function GET(req: Request) {
         const transformedGroups = groupWallets.map(wallet => ({
             id: wallet.id,
             name: wallet.name,
-            balance: (Number(wallet.balance) / LAMPORTS_PER_SOL).toFixed(1),
-            thresholdAmount: (Number(wallet.threshold) / LAMPORTS_PER_SOL).toFixed(1),
+            balance: (Number(wallet.balance) / LAMPORTS_PER_SOL),
+            thresholdAmount: (Number(wallet.threshold) / LAMPORTS_PER_SOL),
             memberCount: wallet.members.length,
             maxMembers: 5, // This could be made configurable in the future
             isJoined: true, // If they're in the members list, they're joined
             bankAccountCreated: wallet.bankAccountCreated,
             userContributions: wallet.members.reduce((acc, member) => ({
                 ...acc,
-                [member.walletAddress]: (Number(member.contribution) / LAMPORTS_PER_SOL).toFixed(1)
+                [member.walletAddress]: (Number(member.contribution) / LAMPORTS_PER_SOL)
             }), {}),
             userApprovals: wallet.members
                 .filter(member => member.hasApproved)

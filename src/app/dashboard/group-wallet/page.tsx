@@ -32,6 +32,7 @@ export default function GroupWalletPage() {
             setIsLoading(true);
             const response = await axios.get(`/api/group-wallet?walletAddress=${primaryWallet.address}`);
             const data = response.data;
+            console.log("🚀 ~ fetchGroups ~ data:", data)
 
             setGroups(data.groups);
         } catch (error) {
