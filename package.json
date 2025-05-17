@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "anchor": "cd anchor && anchor",
+    "anchor-build": "cd anchor && anchor build",
+    "anchor-localnet": "cd anchor && anchor localnet",
+    "anchor-test": "cd anchor && anchor test",
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",
@@ -16,6 +20,7 @@
     "schema": "./prisma/schema.prisma"
   },
   "dependencies": {
+    "@coral-xyz/anchor": "^0.31.1",
     "@dynamic-labs/sdk-react-core": "*",
     "@dynamic-labs/solana": "*",
     "@hookform/resolvers": "^5.0.1",
