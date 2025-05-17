@@ -1,12 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { Footer } from "../(landing)/_components/footer";
-import DynamicMethods from "@/components/Methods";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
-import { isSolanaWallet } from '@dynamic-labs/solana';
 import { Button } from "@/components/ui/button";
-import { useRouter } from 'next/navigation';
-import { methods } from '@/constants/methods';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowUpRight, ArrowDownRight, Wallet, Activity, Coins, Shield } from "lucide-react";
 import { useBankAccount } from '@/hooks/useBankAccount';
@@ -177,11 +172,11 @@ export default function DashboardPage() {
                       <ArrowDownRight className="h-4 w-4" />
                       <span>Withdraw</span>
                     </Button>
-                    {/* <Button variant="outline" className="h-auto py-4 flex flex-col items-center gap-2">
-                      <Coins className="h-4 w-4" />
-                      <span>Swap</span>
-                    </Button>
                     <Button variant="outline" className="h-auto py-4 flex flex-col items-center gap-2">
+                      <Coins className="h-4 w-4" />
+                      <span>Send</span>
+                    </Button>
+                    {/* <Button variant="outline" className="h-auto py-4 flex flex-col items-center gap-2">
                       <Activity className="h-4 w-4" />
                       <span>Stake</span>
                     </Button> */}

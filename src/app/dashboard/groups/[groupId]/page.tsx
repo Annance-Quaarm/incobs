@@ -215,7 +215,7 @@ export default function GroupDetailsPage() {
                         <Button
                             className="w-full"
                             onClick={() => setShowDepositModal(true)}
-                        // disabled={isThresholdReached}
+                            disabled={isThresholdReached}
                         >
                             Deposit
                         </Button>

@@ -1,8 +1,8 @@
 export interface Group {
     id: string;
     name: string;
-    balance: string;
-    thresholdAmount: string;
+    balance: string | number;
+    thresholdAmount: string | number;
     memberCount: number;
     maxMembers: number;
     isJoined: boolean;

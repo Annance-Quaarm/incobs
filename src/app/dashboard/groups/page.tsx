@@ -98,15 +98,15 @@ export default function GroupWalletPage() {
     const transformGroupForUI = (group: ReserveWalletWithRelations) => ({
         id: group.id,
         name: group.name,
-        balance: (Number(group.balance) / LAMPORTS_PER_SOL).toFixed(1),
-        thresholdAmount: (Number(group.threshold) / LAMPORTS_PER_SOL).toFixed(1),
+        balance: (Number(group.balance) / LAMPORTS_PER_SOL),
+        thresholdAmount: (Number(group.threshold) / LAMPORTS_PER_SOL),
         memberCount: group.members.length,
         maxMembers: 5,
         isJoined: group.members.some(member => member.walletAddress === primaryWallet?.address),
         bankAccountCreated: group.bankAccountCreated,
         userContributions: group.members.reduce((acc, member) => ({
             ...acc,
-            [member.name || member.walletAddress]: (Number(member.contribution) / LAMPORTS_PER_SOL).toFixed(1)
+            [member.name || member.walletAddress]: (Number(member.contribution) / LAMPORTS_PER_SOL)
         }), {}),
         userApprovals: group.members
             .filter(member => member.hasApproved)
@@ -117,7 +117,7 @@ export default function GroupWalletPage() {
             bankName: group.bankAccount.bank.name,
             accountNumber: group?.bankAccount?.accountNumber,
             creationDate: format(parseISO(group.bankAccount.createdAt.toString()), 'yyyy-MM-dd HH:mm:ss'),
-            balance: (Number(group?.bankAccount?.balance) / LAMPORTS_PER_SOL).toFixed(1)
+            balance: (Number(group?.bankAccount?.balance) / LAMPORTS_PER_SOL)
         } : null
     });
 
