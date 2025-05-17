@@ -12,8 +12,7 @@
     "start": "next start",
     "lint": "next lint",
     "listener": "tsx scripts/start-listener.ts",
-    "start:with-listener": "npm run listener & next start",
-    "postinstall": "prisma generate && prisma migrate deploy"
+    "start:with-listener": "npm run listener & next start"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts",
