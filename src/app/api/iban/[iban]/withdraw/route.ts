@@ -1,11 +1,10 @@
-import { VirtualIban } from './../../../../../generated/prisma/index.d';
 import { db } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 
 export async function POST(
     request: NextRequest,
-    { params }: { params: { iban: string }}
+    { params }: { params: { iban: string } }
 ) {
     try {
         const iban = params.iban;
@@ -15,14 +14,14 @@ export async function POST(
             description = "Withdraw to wallet"
         } = await request.json();
 
-        if(!amount) {
+        if (!amount) {
             return NextResponse.json(
                 { error: "Amount is required" },
                 { status: 400 }
             )
         }
-        
-        if(!walletAddress) {
+
+        if (!walletAddress) {
             return NextResponse.json(
                 { error: "Wallet address is required" },
                 { status: 400 }
@@ -34,14 +33,14 @@ export async function POST(
             include: { bankAccount: true }
         });
 
-        if(!virtualIban) {
+        if (!virtualIban) {
             return NextResponse.json(
                 { error: "IBAN not found" },
                 { status: 404 }
             );
         }
 
-        if(virtualIban.walletAddress !== walletAddress) {
+        if (virtualIban.walletAddress !== walletAddress) {
             return NextResponse.json(
                 { error: "This IBAN doesn\'t belong to the provided wallet address" },
                 { status: 403 }

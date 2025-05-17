@@ -150,7 +150,7 @@ export default function GroupDetailsPage() {
             <div className="container mx-auto py-6">
                 <div className="text-center">
                     <h2 className="text-xl font-semibold">Group not found</h2>
-                    <p className="text-gray-500 mt-2">The group you're looking for doesn't exist or you don't have access to it.</p>
+                    <p className="text-gray-500 mt-2">The group you&apos;re looking for doesn&apos;t exist or you don&apos;t have access to it.</p>
                     <Link href="/dashboard/groups">
                         <Button className="mt-4">Back to Groups</Button>
                     </Link>
