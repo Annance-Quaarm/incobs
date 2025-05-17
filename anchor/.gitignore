@@ -1,7 +1,18 @@
 .anchor
 .DS_Store
-target
+
 **/*.rs.bk
 node_modules
 test-ledger
 .yarn
+
+# Ignore everything in target
+/target/*
+
+# Except the idl folder
+!/target/idl/
+!/target/idl/**
+
+# Optional: allow types too if needed
+!/target/types/
+!/target/types/**

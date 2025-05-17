@@ -1,0 +1,645 @@
+{
+  "address": "E4eWGJX7rctj5NjhKvPHLDfEUcN8mkT29uVC8tGoLZCZ",
+  "metadata": {
+    "name": "mcbuse_wallets",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "approve_bank_account_creation",
+      "discriminator": [
+        139,
+        243,
+        136,
+        177,
+        186,
+        77,
+        82,
+        243
+      ],
+      "accounts": [
+        {
+          "name": "reserve_wallet",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  115,
+                  101,
+                  114,
+                  118,
+                  101,
+                  95,
+                  119,
+                  97,
+                  108,
+                  108,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "reserve_wallet.name",
+                "account": "ReserveWallet"
+              }
+            ]
+          }
+        },
+        {
+          "name": "approver",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "deposit",
+      "discriminator": [
+        242,
+        35,
+        198,
+        137,
+        82,
+        225,
+        242,
+        182
+      ],
+      "accounts": [
+        {
+          "name": "reserve_wallet",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  115,
+                  101,
+                  114,
+                  118,
+                  101,
+                  95,
+                  119,
+                  97,
+                  108,
+                  108,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "reserve_wallet.name",
+                "account": "ReserveWallet"
+              }
+            ]
+          }
+        },
+        {
+          "name": "depositor",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "initialize_reserve_wallet",
+      "discriminator": [
+        87,
+        182,
+        73,
+        15,
+        160,
+        84,
+        70,
+        34
+      ],
+      "accounts": [
+        {
+          "name": "reserve_wallet",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  115,
+                  101,
+                  114,
+                  118,
+                  101,
+                  95,
+                  119,
+                  97,
+                  108,
+                  108,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "wallet_name"
+              }
+            ]
+          }
+        },
+        {
+          "name": "first_user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "wallet_name",
+          "type": "string"
+        },
+        {
+          "name": "threshold",
+          "type": "u64"
+        },
+        {
+          "name": "bump",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "join_reserve_wallet",
+      "discriminator": [
+        255,
+        142,
+        122,
+        242,
+        42,
+        60,
+        78,
+        103
+      ],
+      "accounts": [
+        {
+          "name": "reserve_wallet",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  115,
+                  101,
+                  114,
+                  118,
+                  101,
+                  95,
+                  119,
+                  97,
+                  108,
+                  108,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "reserve_wallet.name",
+                "account": "ReserveWallet"
+              }
+            ]
+          }
+        },
+        {
+          "name": "new_user",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "set_bank_account_created",
+      "discriminator": [
+        89,
+        230,
+        3,
+        194,
+        236,
+        9,
+        157,
+        202
+      ],
+      "accounts": [
+        {
+          "name": "reserve_wallet",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  115,
+                  101,
+                  114,
+                  118,
+                  101,
+                  95,
+                  119,
+                  97,
+                  108,
+                  108,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "reserve_wallet.name",
+                "account": "ReserveWallet"
+              }
+            ]
+          }
+        },
+        {
+          "name": "bank_wallet",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "bank_account_address",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "sync_wallet_balance",
+      "discriminator": [
+        99,
+        57,
+        23,
+        207,
+        197,
+        203,
+        163,
+        234
+      ],
+      "accounts": [
+        {
+          "name": "reserve_wallet",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  115,
+                  101,
+                  114,
+                  118,
+                  101,
+                  95,
+                  119,
+                  97,
+                  108,
+                  108,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "reserve_wallet.name",
+                "account": "ReserveWallet"
+              }
+            ]
+          }
+        },
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "transfer_from_bank_to_wallet",
+      "discriminator": [
+        244,
+        196,
+        8,
+        249,
+        133,
+        182,
+        73,
+        251
+      ],
+      "accounts": [
+        {
+          "name": "reserve_wallet",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  115,
+                  101,
+                  114,
+                  118,
+                  101,
+                  95,
+                  119,
+                  97,
+                  108,
+                  108,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "reserve_wallet.name",
+                "account": "ReserveWallet"
+              }
+            ]
+          }
+        },
+        {
+          "name": "bank_wallet",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "user_wallet",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "withdraw_funds",
+      "discriminator": [
+        241,
+        36,
+        29,
+        111,
+        208,
+        31,
+        104,
+        217
+      ],
+      "accounts": [
+        {
+          "name": "reserve_wallet",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  115,
+                  101,
+                  114,
+                  118,
+                  101,
+                  95,
+                  119,
+                  97,
+                  108,
+                  108,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "reserve_wallet.name",
+                "account": "ReserveWallet"
+              }
+            ]
+          }
+        },
+        {
+          "name": "withdrawer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "ReserveWallet",
+      "discriminator": [
+        175,
+        254,
+        32,
+        95,
+        184,
+        54,
+        186,
+        12
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "UserAlreadyExists",
+      "msg": "User already exists in the wallet"
+    },
+    {
+      "code": 6001,
+      "name": "MaxUsersReached",
+      "msg": "Max 5 users allowed in the wallet"
+    },
+    {
+      "code": 6002,
+      "name": "UserNotFound",
+      "msg": "User not found in the wallet"
+    },
+    {
+      "code": 6003,
+      "name": "ZeroAmount",
+      "msg": "Amount cannot be zero"
+    },
+    {
+      "code": 6004,
+      "name": "AlreadyApproved",
+      "msg": "User has already approved"
+    },
+    {
+      "code": 6005,
+      "name": "NotAllApproved",
+      "msg": "Not all users have approved bank account creation"
+    },
+    {
+      "code": 6006,
+      "name": "ZeroWithdrawalAmount",
+      "msg": "Withdrawal amount must be greater than zero"
+    },
+    {
+      "code": 6007,
+      "name": "InsufficientContribution",
+      "msg": "Withdrawal amount is more than your contribution"
+    },
+    {
+      "code": 6008,
+      "name": "ThresholdNotMet",
+      "msg": "Threshold not met for bank account creation"
+    },
+    {
+      "code": 6009,
+      "name": "BankAccountAlreadyCreated",
+      "msg": "Bank account already created"
+    },
+    {
+      "code": 6010,
+      "name": "BankAccountNotCreated",
+      "msg": "Bank account not created"
+    },
+    {
+      "code": 6011,
+      "name": "InvalidBankAccount",
+      "msg": "Invalid bank account"
+    }
+  ],
+  "types": [
+    {
+      "name": "Contribution",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ReserveWallet",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "wallet_balance",
+            "type": "u64"
+          },
+          {
+            "name": "threshold",
+            "type": "u64"
+          },
+          {
+            "name": "bank_account_created",
+            "type": "bool"
+          },
+          {
+            "name": "bank_account_address",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "users",
+            "type": {
+              "vec": "pubkey"
+            }
+          },
+          {
+            "name": "user_contributions",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "Contribution"
+                }
+              }
+            }
+          },
+          {
+            "name": "user_approvals",
+            "type": {
+              "vec": "pubkey"
+            }
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ]
+}
