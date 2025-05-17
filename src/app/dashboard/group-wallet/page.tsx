@@ -1,22 +1,32 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CreateGroupWallet } from '@/app/dashboard/group-wallet/_components/create-group-wallet';
 import { DepositModal } from '@/app/dashboard/group-wallet/_components/deposit-modal';
-import { BankAccountDetails } from '@/app/dashboard/group-wallet/_components/bank-account-details';
 import { toast } from 'sonner';
-import { Group } from '@/types';
+import { ReserveWallet, ReserveWalletMember, BankAccount } from '@prisma/client';
 import GroupList from './_components/group-list';
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import axios from 'axios';
+import { LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { format, parseISO } from 'date-fns';
+
+type ReserveWalletWithRelations = ReserveWallet & {
+    members: ReserveWalletMember[];
+    bankAccount?: (BankAccount & {
+        bank: {
+            name: string;
+        };
+    }) | null;
+};
 
 export default function GroupWalletPage() {
     const { primaryWallet } = useDynamicContext();
     const [activeTab, setActiveTab] = useState('groups');
     const [showDepositModal, setShowDepositModal] = useState(false);
-    const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
-    const [groups, setGroups] = useState<Group[]>([]);
+    const [selectedGroup, setSelectedGroup] = useState<ReserveWalletWithRelations | null>(null);
+    const [groups, setGroups] = useState<ReserveWalletWithRelations[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -31,10 +41,7 @@ export default function GroupWalletPage() {
         try {
             setIsLoading(true);
             const response = await axios.get(`/api/group-wallet?walletAddress=${primaryWallet.address}`);
-            const data = response.data;
-            console.log("🚀 ~ fetchGroups ~ data:", data)
-
-            setGroups(data.groups);
+            setGroups(response.data.groups);
         } catch (error) {
             console.error('Error fetching groups:', error);
             toast.error('Failed to fetch groups');
@@ -49,9 +56,7 @@ export default function GroupWalletPage() {
 
     const handleJoinGroup = async (groupId: string) => {
         try {
-            const response = await axios.post(`/api/group-wallet/${groupId}/join`);
-            const data = response.data;
-
+            await axios.post(`/api/group-wallet/${groupId}/join`);
             await fetchGroups(); // Refresh the list after joining
             toast.success('Successfully joined the group');
         } catch (error) {
@@ -72,7 +77,7 @@ export default function GroupWalletPage() {
         if (!selectedGroup || !primaryWallet?.address) return;
 
         try {
-            const response = await axios.post(`/api/group-wallet/${selectedGroup.id}/deposit`, {
+            await axios.post(`/api/group-wallet/${selectedGroup.id}/deposit`, {
                 amount,
             }, {
                 headers: {
@@ -89,6 +94,35 @@ export default function GroupWalletPage() {
         }
     };
 
+    // Transform ReserveWallet data for UI components
+    const transformGroupForUI = (group: ReserveWalletWithRelations) => ({
+        id: group.id,
+        name: group.name,
+        balance: (Number(group.balance) / LAMPORTS_PER_SOL).toFixed(1),
+        thresholdAmount: (Number(group.threshold) / LAMPORTS_PER_SOL).toFixed(1),
+        memberCount: group.members.length,
+        maxMembers: 5,
+        isJoined: true,
+        bankAccountCreated: group.bankAccountCreated,
+        userContributions: group.members.reduce((acc, member) => ({
+            ...acc,
+            [member.name || member.walletAddress]: (Number(member.contribution) / LAMPORTS_PER_SOL).toFixed(1)
+        }), {}),
+        userApprovals: group.members
+            .filter(member => member.hasApproved)
+            .map(member => member.walletAddress),
+        description: group.description || '',
+        bankAccount: group.bankAccountCreated && group.bankAccount ? {
+            accountName: group.name,
+            bankName: group.bankAccount.bank.name,
+            accountNumber: group?.bankAccount?.accountNumber,
+            creationDate: format(parseISO(group.bankAccount.createdAt.toString()), 'yyyy-MM-dd HH:mm:ss'),
+            balance: (Number(group?.bankAccount?.balance) / LAMPORTS_PER_SOL).toFixed(1)
+        } : null
+    });
+
+    const groupList = useMemo(() => groups.map(transformGroupForUI), [groups]);
+
     return (
         <div className="container mx-auto py-6 space-y-6">
             <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -99,7 +133,7 @@ export default function GroupWalletPage() {
 
                 <TabsContent value="groups" className="space-y-6">
                     <GroupList
-                        groups={groups}
+                        groups={groupList}
                         onJoinGroup={handleJoinGroup}
                         onDepositClick={handleDepositClick}
                         isLoading={isLoading}
@@ -120,20 +154,6 @@ export default function GroupWalletPage() {
                 groupName={selectedGroup?.name || ''}
                 groupId={selectedGroup?.id || ''}
             />
-
-            {selectedGroup && selectedGroup.bankAccountCreated && (
-                <BankAccountDetails
-                    bankAccount={{
-                        accountName: 'Bank Account',
-                        bankName: 'Bank Name',
-                        accountNumber: '1234567890',
-                        creationDate: '2021-01-01',
-                        balance: selectedGroup.balance
-                    }}
-                    onDistributeFunds={() => Promise.resolve()}
-                    isAdmin={true}
-                />
-            )}
         </div>
     );
 } 

@@ -31,3 +31,34 @@ export function getBestFullName(user: UserProfile['verifiedCredentials'][0]): st
 
   return user.publicIdentifier ?? 'Unknown';
 }
+
+export function serializeBigInt(obj: any): any {
+  if (typeof obj === 'bigint') {
+    return obj.toString();
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.map(serializeBigInt);
+  }
+
+  if (obj !== null && typeof obj === 'object') {
+    const result: any = {};
+    for (const [key, value] of Object.entries(obj)) {
+      result[key] = serializeBigInt(value);
+    }
+    return result;
+  }
+
+  return obj;
+}
+
+// serialize string to bigint iteratively in an object
+export function serializeStringToBigInt(obj: any): any {
+  if (typeof obj === 'string') {
+    return BigInt(obj);
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.map(serializeStringToBigInt);
+  }
+}

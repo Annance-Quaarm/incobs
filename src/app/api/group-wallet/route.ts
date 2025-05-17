@@ -27,32 +27,17 @@ export async function GET(req: Request) {
                 }
             },
             include: {
-                members: true
+                members: true,
+                bankAccount: {
+                    include: {
+                        bank: true
+                    }
+                }
             }
         });
 
-        // Transform the data to match the frontend Group type
-        const transformedGroups = groupWallets.map(wallet => ({
-            id: wallet.id,
-            name: wallet.name,
-            balance: (Number(wallet.balance) / LAMPORTS_PER_SOL),
-            thresholdAmount: (Number(wallet.threshold) / LAMPORTS_PER_SOL),
-            memberCount: wallet.members.length,
-            maxMembers: 5, // This could be made configurable in the future
-            isJoined: true, // If they're in the members list, they're joined
-            bankAccountCreated: wallet.bankAccountCreated,
-            userContributions: wallet.members.reduce((acc, member) => ({
-                ...acc,
-                [member.walletAddress]: (Number(member.contribution) / LAMPORTS_PER_SOL)
-            }), {}),
-            userApprovals: wallet.members
-                .filter(member => member.hasApproved)
-                .map(member => member.walletAddress),
-            description: wallet.description || ''
-        }));
 
-        return NextResponse.json({ groups: transformedGroups });
-
+        return NextResponse.json({ groups: groupWallets });
     } catch (error) {
         console.error('Error fetching group wallets:', error);
         return NextResponse.json(
@@ -153,4 +138,4 @@ export async function POST(req: Request) {
             { status: 500 }
         );
     }
-} 
+}

@@ -7,14 +7,7 @@ export interface Group {
     maxMembers: number;
     isJoined: boolean;
     bankAccountCreated: boolean;
-    userContributions: Record<string, string>;
+    userContributions: { [key: string]: string };
     userApprovals: string[];
     description: string;
-    bankAccount?: {
-        accountName: string;
-        bankName: string;
-        accountNumber: string;
-        creationDate: string;
-        balance: string;
-    } | null;
-} 
+}

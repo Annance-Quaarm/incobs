@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -55,9 +55,9 @@ export default function GroupList({ groups, onJoinGroup, onDepositClick, isLoadi
 
     const getProgressColor = (current: number, max: number) => {
         const percentage = (current / max) * 100;
-        if (percentage >= 80) return "bg-red-500";
-        if (percentage >= 60) return "bg-yellow-500";
-        return "bg-green-500";
+        if (percentage >= 100) return "bg-green-500";
+        if (percentage >= 50) return "bg-yellow-500";
+        return "bg-red-500";
     };
 
     const handleCardClick = (groupId: string) => {
@@ -94,6 +94,10 @@ export default function GroupList({ groups, onJoinGroup, onDepositClick, isLoadi
                 </CardContent>
             </Card>
         );
+    }
+
+    const isThresholdReached = (group: Group) => {
+        return Number(group.balance) >= Number(group.thresholdAmount);
     }
 
     return (
@@ -158,8 +162,9 @@ export default function GroupList({ groups, onJoinGroup, onDepositClick, isLoadi
                                         e.stopPropagation();
                                         onDepositClick(group.id);
                                     }}
+                                    disabled={isThresholdReached(group)}
                                 >
-                                    Deposit
+                                    {isThresholdReached(group) ? "Threshold Reached" : "Deposit"}
                                 </Button>
                             ) : (
                                 <Button

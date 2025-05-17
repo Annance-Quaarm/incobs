@@ -11,7 +11,7 @@ export async function POST(
         const reserveWalletId = params.id;
         const { bankCode } = await request.json();
 
-        if(!bankCode) {
+        if (!bankCode) {
             return NextResponse.json(
                 { error: "Bank code is required" },
                 { status: 400 }
@@ -26,21 +26,21 @@ export async function POST(
             }
         });
 
-        if(!reserveWallet) {
+        if (!reserveWallet) {
             return NextResponse.json(
                 { error: "Reserve wallet not found" },
                 { status: 404 }
             );
         }
 
-        if(reserveWallet.bankAccount) {
+        if (reserveWallet.bankAccount) {
             return NextResponse.json({
                 error: "The reserve wallet already has a bank account",
-                accountId: reserveWallet.bankAccount
+                accountId: reserveWallet.bankAccount.id
             }, { status: 400 });
         }
 
-        if(reserveWallet.balance < reserveWallet.threshold) {
+        if (reserveWallet.balance < reserveWallet.threshold) {
             return NextResponse.json(
                 { error: "Threshold not met for bank account creation" },
                 { status: 400 }
@@ -49,7 +49,7 @@ export async function POST(
 
         const notApprovedMembers = reserveWallet.members.filter(member => !member.hasApproved)
 
-        if(notApprovedMembers.length > 0) {
+        if (notApprovedMembers.length > 0) {
             return NextResponse.json({
                 error: "Not all members have approved bank account creation",
                 pendingApprovals: notApprovedMembers.map(member => member.walletAddress)
@@ -60,7 +60,7 @@ export async function POST(
             where: { code: bankCode }
         });
 
-        if(!bank) {
+        if (!bank) {
             return NextResponse.json(
                 { error: "Bank not found" },
                 { status: 404 }
@@ -103,7 +103,7 @@ export async function POST(
             }
         });
 
-        return NextResponse.json({
+        const data = {
             success: true,
             bankAccount: {
                 id: bankAccount.id,
@@ -117,7 +117,10 @@ export async function POST(
                 iban: iban.iban,
                 walletAddress: iban.walletAddress
             }))
-        });
+        }
+
+
+        return NextResponse.json(data);
     } catch (error) {
         console.error("Error creating bank account:", error);
         return NextResponse.json(

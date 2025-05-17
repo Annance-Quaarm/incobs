@@ -58,7 +58,7 @@ export function BankAccountDetails({ bankAccount, onDistributeFunds, isAdmin }: 
                         </div>
                         <div>
                             <p className="text-sm font-medium text-gray-500">Creation Date</p>
-                            <p className="text-lg font-semibold">{bankAccount.creationDate}</p>
+                            <p className="text-lg font-semibold">{bankAccount?.creationDate || 'N/A'}</p>
                         </div>
                         <div className="col-span-2">
                             <p className="text-sm font-medium text-gray-500">Current Balance</p>
