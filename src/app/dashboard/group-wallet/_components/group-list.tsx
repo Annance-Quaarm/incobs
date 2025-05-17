@@ -19,14 +19,16 @@ import {
 import { toast } from 'sonner';
 import { Group } from '@/types';
 import { useRouter } from 'next/navigation';
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface GroupListProps {
     groups: Group[];
     onJoinGroup: (groupId: string) => Promise<void>;
     onDepositClick: (groupId: string) => void;
+    isLoading?: boolean;
 }
 
-export default function GroupList({ groups, onJoinGroup, onDepositClick }: GroupListProps) {
+export default function GroupList({ groups, onJoinGroup, onDepositClick, isLoading = false }: GroupListProps) {
     const router = useRouter();
     const [joiningGroupId, setJoiningGroupId] = useState<string | null>(null);
     const [isJoining, setIsJoining] = useState(false);
@@ -61,6 +63,38 @@ export default function GroupList({ groups, onJoinGroup, onDepositClick }: Group
     const handleCardClick = (groupId: string) => {
         router.push(`/dashboard/group-wallet/${groupId}`);
     };
+
+    if (isLoading) {
+        return (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {[1, 2, 3].map((i) => (
+                    <Card key={i}>
+                        <CardHeader>
+                            <Skeleton className="h-6 w-3/4" />
+                            <Skeleton className="h-4 w-1/2" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="space-y-2">
+                                <Skeleton className="h-4 w-full" />
+                                <Skeleton className="h-4 w-2/3" />
+                                <Skeleton className="h-4 w-1/2" />
+                            </div>
+                        </CardContent>
+                    </Card>
+                ))}
+            </div>
+        );
+    }
+
+    if (groups.length === 0) {
+        return (
+            <Card>
+                <CardContent className="flex flex-col items-center justify-center py-8">
+                    <p className="text-muted-foreground">No group wallets found</p>
+                </CardContent>
+            </Card>
+        );
+    }
 
     return (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

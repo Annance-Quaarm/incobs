@@ -4,14 +4,16 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "listener": "tsx scripts/start-listener.ts",
-    "start:with-listener": "npm run listener & next start"
+    "start:with-listener": "npm run listener & next start",
+    "postinstall": "prisma generate && prisma migrate deploy"
   },
   "prisma": {
-    "seed": "tsx prisma/seed.ts"
+    "seed": "tsx prisma/seed.ts",
+    "schema": "./prisma/schema.prisma"
   },
   "dependencies": {
     "@dynamic-labs/sdk-react-core": "*",
@@ -32,14 +34,19 @@
     "@radix-ui/react-switch": "^1.2.4",
     "@radix-ui/react-tabs": "^1.1.11",
     "@radix-ui/react-tooltip": "^1.2.6",
+    "@solana/web3.js": "^1.98.2",
     "@tailwindcss/postcss": "^4.1.6",
     "@tanstack/react-table": "^8.21.3",
+    "@types/bn.js": "^5.1.6",
+    "@types/react-select": "^5.0.1",
     "axios": "^1.9.0",
     "bigint-buffer": "^1.1.5",
+    "bn.js": "^5.2.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "crypto-browserify": "^3.12.0",
     "framer-motion": "^12.11.0",
+    "lodash": "^4.17.21",
     "lucide-react": "^0.510.0",
     "motion": "^12.11.3",
     "next": "^14.2.28",
@@ -49,6 +56,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.56.3",
+    "react-select": "^5.10.1",
     "sonner": "^2.0.3",
     "stream-browserify": "^3.0.0",
     "tailwind-merge": "^3.3.0",
@@ -56,6 +64,7 @@
     "zod": "^3.24.4"
   },
   "devDependencies": {
+    "@types/lodash": "^4.17.16",
     "@types/node": "^20.17.47",
     "@types/react": "^18",
     "@types/react-dom": "^18",

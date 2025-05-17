@@ -1,0 +1,2 @@
+export const SOLANA_RPC_URL = process.env.NEXT_PUBLIC_SOLANA_RPC_URL || 'https://api.devnet.solana.com';
+export const PROGRAM_ID = process.env.NEXT_PUBLIC_PROGRAM_ID || "7V3amFUk7nFV2rt8ucrupRA3nGGEmGTu4CXqiVfFqt9U";

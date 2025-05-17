@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CreateGroupWallet } from '@/app/dashboard/group-wallet/_components/create-group-wallet';
 import { DepositModal } from '@/app/dashboard/group-wallet/_components/deposit-modal';
@@ -8,102 +8,55 @@ import { BankAccountDetails } from '@/app/dashboard/group-wallet/_components/ban
 import { toast } from 'sonner';
 import { Group } from '@/types';
 import GroupList from './_components/group-list';
-
+import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import axios from 'axios';
 
 export default function GroupWalletPage() {
+    const { primaryWallet } = useDynamicContext();
     const [activeTab, setActiveTab] = useState('groups');
     const [showDepositModal, setShowDepositModal] = useState(false);
     const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
+    const [groups, setGroups] = useState<Group[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
-
-    // Mock data - replace with actual data from your blockchain
-    const [groups, setGroups] = useState<Group[]>([
-        {
-            id: '1',
-            name: 'Family Fund',
-            balance: '5.0',
-            thresholdAmount: '10.0',
-            memberCount: 3,
-            maxMembers: 5,
-            isJoined: true,
-            bankAccountCreated: true,
-            userContributions: {
-                'user1': '2.0',
-                'user2': '2.0',
-                'user3': '1.0'
-            },
-            userApprovals: ['user1', 'user2'],
-            description: 'Family fund for emergencies'
-        },
-        {
-            id: '2',
-            name: 'Vacation Pool',
-            balance: '2.5',
-            thresholdAmount: '5.0',
-            memberCount: 2,
-            maxMembers: 5,
-            isJoined: false,
-            bankAccountCreated: false,
-            userContributions: {
-                'user1': '1.5',
-                'user2': '1.0'
-            },
-            userApprovals: [],
-            description: 'Vacation pool for family vacation'
-        },
-        {
-            id: '3',
-            name: 'Emergency Fund',
-            balance: '7.5',
-            thresholdAmount: '15.0',
-            memberCount: 5,
-            maxMembers: 5,
-            isJoined: false,
-            bankAccountCreated: true,
-            userContributions: {
-                'user1': '2.5',
-                'user2': '2.0',
-                'user3': '1.5',
-                'user4': '1.0',
-                'user5': '0.5'
-            },
-            userApprovals: ['user1', 'user2', 'user3', 'user4', 'user5'],
-            description: 'Emergency fund for unexpected expenses'
+    useEffect(() => {
+        if (primaryWallet?.address) {
+            fetchGroups();
         }
-    ]);
+    }, [primaryWallet?.address]);
 
-    const handleCreateGroup = async (name: string, threshold: string) => {
-        // Mock implementation - replace with actual blockchain interaction
-        const newGroup: Group = {
-            id: Date.now().toString(),
-            name,
-            balance: '0.0',
-            thresholdAmount: threshold,
-            memberCount: 1,
-            maxMembers: 5,
-            isJoined: true,
-            bankAccountCreated: false,
-            userContributions: {},
-            userApprovals: [],
-            description: ''
-        };
+    const fetchGroups = async () => {
+        if (!primaryWallet?.address) return;
 
-        setGroups([...groups, newGroup]);
-        toast.success("Group wallet created successfully.");
+        try {
+            setIsLoading(true);
+            const response = await axios.get(`/api/group-wallet?walletAddress=${primaryWallet.address}`);
+            const data = response.data;
+
+            setGroups(data.groups);
+        } catch (error) {
+            console.error('Error fetching groups:', error);
+            toast.error('Failed to fetch groups');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleCreateGroup = async () => {
+        await fetchGroups(); // Refresh the list after creating a new group
     };
 
     const handleJoinGroup = async (groupId: string) => {
-        // Mock implementation - replace with actual blockchain interaction
-        setGroups(groups.map(group => {
-            if (group.id === groupId) {
-                return {
-                    ...group,
-                    memberCount: group.memberCount + 1,
-                    isJoined: true
-                };
-            }
-            return group;
-        }));
+        try {
+            const response = await axios.post(`/api/group-wallet/${groupId}/join`);
+            const data = response.data;
+
+            await fetchGroups(); // Refresh the list after joining
+            toast.success('Successfully joined the group');
+        } catch (error) {
+            console.error('Error joining group:', error);
+            toast.error(error instanceof Error ? error.message : 'Failed to join group');
+        }
     };
 
     const handleDepositClick = (groupId: string) => {
@@ -115,25 +68,24 @@ export default function GroupWalletPage() {
     };
 
     const handleDeposit = async (amount: string) => {
-        if (!selectedGroup) return;
+        if (!selectedGroup || !primaryWallet?.address) return;
 
-        // Mock implementation - replace with actual blockchain interaction
-        setGroups(groups.map(group => {
-            if (group.id === selectedGroup.id) {
-                return {
-                    ...group,
-                    balance: (parseFloat(group.balance) + parseFloat(amount)).toFixed(1),
-                    userContributions: {
-                        ...group.userContributions,
-                        'currentUser': amount
-                    }
-                };
-            }
-            return group;
-        }));
+        try {
+            const response = await axios.post(`/api/group-wallet/${selectedGroup.id}/deposit`, {
+                amount,
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
 
-        setShowDepositModal(false);
-        toast.success(`Successfully deposited ${amount} SOL to ${selectedGroup.name}`);
+            await fetchGroups();
+            setShowDepositModal(false);
+            toast.success(`Successfully deposited ${amount} SOL to ${selectedGroup.name}`);
+        } catch (error) {
+            console.error('Error depositing:', error);
+            toast.error(error instanceof Error ? error.message : 'Failed to deposit');
+        }
     };
 
     return (
@@ -149,14 +101,13 @@ export default function GroupWalletPage() {
                         groups={groups}
                         onJoinGroup={handleJoinGroup}
                         onDepositClick={handleDepositClick}
+                        isLoading={isLoading}
                     />
                 </TabsContent>
 
                 <TabsContent value="create">
                     <CreateGroupWallet
-                        onSuccess={() => {
-                            // Implement me
-                        }}
+                        onSuccess={handleCreateGroup}
                     />
                 </TabsContent>
             </Tabs>

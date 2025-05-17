@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Users, Wallet, Banknote, ArrowLeft } from 'lucide-react';
 import { Group } from '@/types';
@@ -12,54 +11,94 @@ import { DepositModal } from '@/app/dashboard/group-wallet/_components/deposit-m
 import { BankAccountDetails } from '@/app/dashboard/group-wallet/_components/bank-account-details';
 import { toast } from 'sonner';
 import Link from 'next/link';
+import axios from 'axios';
 
 export default function GroupDetailsPage() {
     const params = useParams();
     const [group, setGroup] = useState<Group | null>(null);
+    console.log("🚀 ~ GroupDetailsPage ~ group:", group)
+    const [isLoading, setIsLoading] = useState(true);
     const [showDepositModal, setShowDepositModal] = useState(false);
 
-    // Mock data - replace with actual data fetching
     useEffect(() => {
-        // Simulate fetching group data
-        const mockGroup: Group = {
-            id: params.groupId as string,
-            name: 'Family Fund',
-            balance: '5.0',
-            thresholdAmount: '10.0',
-            memberCount: 3,
-            maxMembers: 5,
-            isJoined: true,
-            bankAccountCreated: true,
-            userContributions: {
-                'user1': '2.0',
-                'user2': '2.0',
-                'user3': '1.0'
-            },
-            userApprovals: ['user1', 'user2'],
-            description: 'Family fund for emergencies'
+        const fetchGroupDetails = async () => {
+            try {
+                const response = await axios.get(`/api/group-wallet/${params.groupId}`);
+                const data = response.data;
+
+                if (data.error) {
+                    throw new Error(data.error || 'Failed to fetch group details');
+                }
+
+                setGroup(data.group);
+            } catch (error) {
+                console.error('Error fetching group details:', error);
+                toast.error('Failed to load group details');
+            } finally {
+                setIsLoading(false);
+            }
         };
-        setGroup(mockGroup);
+
+        fetchGroupDetails();
     }, [params.groupId]);
 
     const handleDeposit = async (amount: string) => {
         if (!group) return;
 
-        // Mock implementation - replace with actual blockchain interaction
-        setGroup({
-            ...group,
-            balance: (parseFloat(group.balance) + parseFloat(amount)).toFixed(1),
-            userContributions: {
-                ...group.userContributions,
-                'currentUser': amount
-            }
-        });
+        try {
+            const response = await axios.post(`/api/group-wallet/${group.id}/deposit`, {
+                amount,
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            const data = response.data;
 
-        setShowDepositModal(false);
-        toast.success(`Successfully deposited ${amount} SOL to ${group.name}`);
+            if (data.error) {
+                throw new Error(data.error || 'Failed to deposit funds');
+            }
+
+            // Update the group state with new balance
+            setGroup(prev => prev ? {
+                ...prev,
+                balance: data.newBalance,
+                userContributions: {
+                    ...prev.userContributions,
+                    [data.userWalletAddress]: amount
+                }
+            } : null);
+
+            setShowDepositModal(false);
+            toast.success(`Successfully deposited ${amount} SOL to ${group.name}`);
+        } catch (error) {
+            console.error('Error depositing funds:', error);
+            toast.error(error instanceof Error ? error.message : 'Failed to deposit funds');
+        }
     };
 
+    if (isLoading) {
+        return (
+            <div className="container mx-auto py-6">
+                <div className="flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+                </div>
+            </div>
+        );
+    }
+
     if (!group) {
-        return <div>Loading...</div>;
+        return (
+            <div className="container mx-auto py-6">
+                <div className="text-center">
+                    <h2 className="text-xl font-semibold">Group not found</h2>
+                    <p className="text-gray-500 mt-2">The group you're looking for doesn't exist or you don't have access to it.</p>
+                    <Link href="/dashboard/group-wallet">
+                        <Button className="mt-4">Back to Groups</Button>
+                    </Link>
+                </div>
+            </div>
+        );
     }
 
     return (
@@ -142,20 +181,14 @@ export default function GroupDetailsPage() {
                 </Card>
             </div>
 
-            {group.bankAccountCreated && (
+            {group.bankAccountCreated && group?.bankAccount && (
                 <Card>
                     <CardHeader>
                         <CardTitle>Bank Account Details</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <BankAccountDetails
-                            bankAccount={{
-                                accountName: 'Bank Account',
-                                bankName: 'Bank Name',
-                                accountNumber: '1234567890',
-                                creationDate: '2021-01-01',
-                                balance: group.balance
-                            }}
+                            bankAccount={group?.bankAccount}
                             onDistributeFunds={() => Promise.resolve()}
                             isAdmin={true}
                         />
